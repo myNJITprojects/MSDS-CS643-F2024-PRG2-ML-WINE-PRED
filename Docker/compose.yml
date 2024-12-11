@@ -1,0 +1,12 @@
+services:
+  dev_cs643_mll:
+    build:
+      context: /home/andres/Development/NJIT/2_cs64_prg2_wine_pred/Docker
+      dockerfile: mll.dockerfile
+    container_name: cs643_winepred_mll
+    volumes:
+      - type: bind
+        source: /home/andres/Development/NJIT/2_cs64_prg2_wine_pred
+        target: /home/app
+    stdin_open: true
+    tty: true
