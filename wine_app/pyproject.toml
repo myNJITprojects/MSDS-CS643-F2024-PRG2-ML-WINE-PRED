@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "wine-app"
+version = "0.1.0"
+description = "Wine Prediction using MLL, PySpark."
+authors = ["Jairo A Perez <jp594@njit.edu>"]
+readme = "README.md"
+packages = [{include ="wine-app"}]
+
+[tool.poetry.dependencies]
+python = "^3.13"
+pyspark = "^3.5.3"
+numpy = "^2.2.0"
+disutils = "^1.4.32.post2"
+setuptools = "^75.6.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
