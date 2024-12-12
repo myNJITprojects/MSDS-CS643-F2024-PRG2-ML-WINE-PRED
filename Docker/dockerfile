@@ -1,0 +1,13 @@
+FROM python:3.11-slim-buster
+
+WORKDIR /app
+
+# RUN dnf install python3 java-11-openjdk -y
+
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt && mkdir /data
+
+COPY wineapp.py .
+COPY TrainingDataset.csv .
+
+CMD ["python", "wineapp.py", "/data/data.csv"]
