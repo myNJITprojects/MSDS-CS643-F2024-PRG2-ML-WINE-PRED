@@ -17,8 +17,27 @@ try:
 except Exception as ex:
   print("Not running on Google Colab. Continue...\n")
 
+# ---------  GLOBAL CONFIGS ----------
+modelPath="/path/to/folder"
+csvFile="file.csv"
+s3Bucket="bucket_name"
+fileKey=f"/path/to/folder/{csvFile}"
+s3ModelPath="model"
+# --------- SPARK CONFIGS ----------
+spark_master = "machine hostname"
+spark_memory = "10g"
+spark_cores = "3"
+spark_executors = "4"
+# -----------------------------------
+
 # Create a SparkSession
-spark = SparkSession.builder.appName("WineQualityPrediction").getOrCreate()
+spark = SparkSession.builder \
+  .appName("WineQty_ModelPrediction") \
+  .master(spark_master) \
+  .config("spark.executor.memory", spark_memory) \
+  .config("spark.executor.cores", spark_cores) \
+  .config("spark.num.executors", spark_executors) \
+  .getOrCreate()
 
 # Read the CSV file (adjust the path as needed)
 if 'drive' in globals():  # If Google Drive is mounted
@@ -77,7 +96,10 @@ predictions = model.transform(testData)
 evaluator = MulticlassClassificationEvaluator(labelCol="quality", predictionCol="prediction", metricName="f1") # Specify labelCol and predictionCol
 f1_score = evaluator.evaluate(predictions)
 
+print("------------------------------")
+print("WINE Predicition")
 print("F1 Score: ", f1_score)
+print("------------------------------")
 
 # Stop the SparkSession
 spark.stop()

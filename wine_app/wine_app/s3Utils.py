@@ -6,14 +6,6 @@ from io import BytesIO
 # --------- SETTINGS ---------
 AWS_AK="ABC"
 AWS_SK="ABC"
-
-modelPath="ABC"
-
-csvFile="TrainingDataset.csv"
-
-s3Bucket="ABC"
-fileKey=f"data/{csvFile}"
-s3ModelPath="model"
 # --------- SETTINGS ---------
 
 def folderExists(bucket, remote_folder):
