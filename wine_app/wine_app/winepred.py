@@ -2,6 +2,7 @@ import boto3
 import os
 from io import BytesIO
 from pyspark.sql import SparkSession
+from pyspark import SparkFiles
 from pyspark.ml import Pipeline
 from pyspark.ml.feature import VectorAssembler
 from pyspark.ml.classification import LogisticRegression
@@ -19,12 +20,14 @@ except Exception as ex:
 
 # ---------  GLOBAL CONFIGS ----------
 modelPath="/path/to/folder"
+downloadPath = "/path/to/folder"
 csvFile="file.csv"
-s3Bucket="bucket_name"
-fileKey=f"/path/to/folder/{csvFile}"
+targetFile = f"{downloadPath}/{csvFile}"
+s3Bucket="/path/to/bucket"
+fileKey=f"data/{csvFile}"
 s3ModelPath="model"
 # --------- SPARK CONFIGS ----------
-spark_master = "machine hostname"
+spark_master = "spark server address"
 spark_memory = "10g"
 spark_cores = "3"
 spark_executors = "4"
@@ -41,11 +44,16 @@ spark = SparkSession.builder \
 
 # Read the CSV file (adjust the path as needed)
 if 'drive' in globals():  # If Google Drive is mounted
-  data = spark.read.csv("/content/drive/MyDrive/Graduate/2024 Fall/CS-643-863/Homeworks/Program 2/TrainingDataset.csv", header=True, inferSchema=True)
+  data = spark.read.csv("/content/drive/MyDrive/file.csv", header=True, inferSchema=True)
 else:  
-  # If the file is directly uploaded
-  downloadFile(csvFile, s3Bucket, fileKey)
-  data = spark.read.csv(csvFile, header=True, inferSchema=True).repartition(4)
+  downloadFile(targetFile, s3Bucket, fileKey)
+  
+  spark.catalog.clearCache()
+  spark.sparkContext.addFile(targetFile)
+  spark.catalog.refreshByPath(targetFile)
+
+  data = spark.read.csv(SparkFiles.get(targetFile), header=True, inferSchema=True)
+  data = data.repartition(4)
 
 
 # Select the features and label
