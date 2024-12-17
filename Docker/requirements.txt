@@ -2,3 +2,5 @@ pyspark
 numpy
 setuptools
 disutils
+py4j
+pandas
